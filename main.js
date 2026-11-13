@@ -204,7 +204,7 @@
         ${wave(it.id)}
         <div class="g-top"><span class="g-dot" data-area="${areaName[it.area]}" aria-label="Area: ${areaName[it.area]}"></span><span class="g-period">${todo(it.period)}</span></div>
         ${it.group === 'Theses' ? `<span class="g-label">${it.kind}</span>` : ''}
-        <h3>${it.title}</h3><p>${todo(it.summary)}</p>
+        <h3>${it.cardTitle || it.title}</h3><p>${todo(it.summary)}</p>
         <span class="g-more">Read more <i aria-hidden="true">→</i></span></a>`;
 
     document.querySelectorAll('[data-gallery]').forEach(el => {

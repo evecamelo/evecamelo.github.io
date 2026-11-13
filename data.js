@@ -153,6 +153,7 @@ window.SITE = (function () {
     "group": "Research",
     "kind": "Research",
     "title": "Speech sound acoustics at the BITS Lab",
+    "cardTitle": "Speech sound acoustics",
     "period": "May 2026 – present",
     "place": "New York University, United States (remote)",
     "people": "Tara McAllister, Ph.D.",
