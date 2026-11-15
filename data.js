@@ -152,8 +152,7 @@ window.SITE = (function () {
     "area": "speech",
     "group": "Research",
     "kind": "Research",
-    "title": "Speech sound acoustics at the BITS Lab",
-    "cardTitle": "Speech sound acoustics",
+    "title": "Speech sound acoustics",
     "period": "May 2026 – present",
     "place": "New York University, United States (remote)",
     "people": "Tara McAllister, Ph.D.",
@@ -197,12 +196,6 @@ window.SITE = (function () {
       "Speech sound segmentation",
       "Scientific discussion in English",
       "International collaboration"
-    ],
-    "photos": [
-      {
-        "src": "images/research/bits-praat-training.jpg",
-        "caption": "Praat training: segmenting and checking speech sounds in a recording"
-      }
     ]
   },
   {
