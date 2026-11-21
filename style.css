@@ -380,3 +380,12 @@ footer a{text-decoration:none} footer a:hover{color:var(--text)}
 .lead:has(.lp:hover), .lead:has(.lp:focus){position:relative; z-index:5}
 
 .gal-secs{display:flex;flex-direction:column;gap:36px}
+
+/* ---------- language switch (flags) ---------- */
+.lang-switch{margin-left:auto; display:inline-flex; align-items:center; gap:4px; flex-shrink:0}
+.lang-switch .flag{display:grid; place-items:center; width:26px; height:24px; border-radius:6px; opacity:.45; filter:saturate(.6); transition:opacity .2s, filter .2s, background .2s}
+.lang-switch .flag svg{width:16px; height:11px; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.lang-switch a.flag:hover{opacity:.9; filter:none}
+.lang-switch .flag[aria-current]{opacity:1; filter:none; background:var(--bg2)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+@media (max-width:600px){.lang-switch .flag{width:24px; height:22px}.lang-switch .flag svg{width:15px; height:10px}}

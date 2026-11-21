@@ -1,6 +1,13 @@
 (function () {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
+  const ES = root.lang === 'es';
+  document.querySelectorAll('.lang-switch a[hreflang]').forEach(a => a.addEventListener('click', () => {
+    if (location.hash) a.href = a.getAttribute('href').split('#')[0] + location.hash;
+    try { localStorage.setItem('lang', a.hreflang); } catch (e) {}
+  }));
+  const PT = root.lang === 'pt-BR';
+  const tx = (en, es, pt) => ES ? es : PT ? pt : en;
   if (!reduce && 'IntersectionObserver' in window) root.classList.add('js');
   const listeners = [];
 
@@ -50,7 +57,7 @@
       if (!all.length) { el.closest('section') && el.closest('section').remove(); return; }
       if (limit && all.length > limit) {
         btn = document.createElement('button'); btn.type = 'button'; btn.className = 'm-more';
-        const label = () => { btn.innerHTML = open ? 'Show fewer photos <i aria-hidden="true">↑</i>' : `Show all ${all.length} photos <i aria-hidden="true">↓</i>`; };
+        const label = () => { btn.innerHTML = open ? tx('Show fewer photos', 'Ver menos fotos', 'Ver menos fotos') + ' <i aria-hidden="true">↑</i>' : tx(`Show all ${all.length} photos`, `Ver las ${all.length} fotos`, `Ver todas as ${all.length} fotos`) + ' <i aria-hidden="true">↓</i>'; };
         label(); el.after(btn);
         btn.addEventListener('click', () => { open = !open; label(); layout(true); if (!open) el.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' }); });
       }
@@ -118,10 +125,10 @@
   const map = document.getElementById('map');
   if (map) {
     const areas = [
-      { c: '--salmon', name: 'Child language development and disorders', kw: ['bilingual acquisition', 'language disorders', 'clinical practice'] },
-      { c: '--peri', name: 'Cognition and neurodevelopment', kw: ['stuttering', 'attention', 'neurodivergence'] },
-      { c: '--sand', name: 'Speech sound analysis', kw: ['acoustic analysis', 'Praat', 'phonemic analysis'] },
-      { c: '--sage', name: 'Digital health and learning technologies', kw: ['telehealth', 'AI ethics', 'digital learning'] }
+      { c: '--salmon', name: tx('Child language development and disorders', 'Desarrollo y trastornos del lenguaje infantil', 'Desenvolvimento e distúrbios da linguagem infantil'), kw: tx(['bilingual acquisition', 'language disorders', 'clinical practice'], ['adquisición bilingüe', 'trastornos del lenguaje', 'práctica clínica'], ['aquisição bilíngue', 'distúrbios da linguagem', 'prática clínica']) },
+      { c: '--peri', name: tx('Cognition and neurodevelopment', 'Cognición y neurodesarrollo', 'Cognição e neurodesenvolvimento'), kw: tx(['stuttering', 'attention', 'neurodivergence'], ['tartamudez', 'atención', 'neurodivergencia'], ['gagueira', 'atenção', 'neurodivergência']) },
+      { c: '--sand', name: tx('Speech sound analysis', 'Análisis de los sonidos del habla', 'Análise dos sons da fala'), kw: tx(['acoustic analysis', 'Praat', 'phonemic analysis'], ['análisis acústico', 'Praat', 'análisis fonémico'], ['análise acústica', 'Praat', 'análise fonêmica']) },
+      { c: '--sage', name: tx('Digital health and learning technologies', 'Salud digital y tecnologías de aprendizaje', 'Saúde digital e tecnologias de aprendizagem'), kw: tx(['telehealth', 'AI ethics', 'digital learning'], ['telesalud', 'ética de la IA', 'aprendizaje digital'], ['telessaúde', 'ética da IA', 'aprendizagem digital']) }
     ];
     const pos = [[18, 15], [82, 15], [18, 74], [82, 74]];
     const NS = 'http://www.w3.org/2000/svg', svg = document.getElementById('spokes');
@@ -182,11 +189,11 @@
   const S = window.SITE;
   if (S) {
     const areaVar = { cognition: '--peri', digital: '--sage', language: '--salmon', speech: '--sand' };
-    const areaName = { language: 'Child language development and disorders', cognition: 'Cognition and neurodevelopment', speech: 'Speech sound analysis', digital: 'Digital health and learning technologies' };
+    const areaName = tx({ language: 'Child language development and disorders', cognition: 'Cognition and neurodevelopment', speech: 'Speech sound analysis', digital: 'Digital health and learning technologies' }, { language: 'Desarrollo y trastornos del lenguaje infantil', cognition: 'Cognición y neurodesarrollo', speech: 'Análisis de los sonidos del habla', digital: 'Salud digital y tecnologías de aprendizaje' }, { language: 'Desenvolvimento e distúrbios da linguagem infantil', cognition: 'Cognição e neurodesenvolvimento', speech: 'Análise dos sons da fala', digital: 'Saúde digital e tecnologias de aprendizagem' });
     const esc = s => String(s);
     const todo = s => esc(s).replace(/\[([^\]]+)\]/g, '<span class="todo">[$1]</span>');
     const all = [...S.projects, ...S.publications, ...S.experience];
-    const collectionOf = it => S.projects.includes(it) ? ['research.html', 'Research', S.projects] : S.publications.includes(it) ? ['research.html#publications', 'Publications', S.publications] : ['experience.html', 'Experience', S.experience];
+    const collectionOf = it => S.projects.includes(it) ? ['research.html', tx('Research', 'Investigación', 'Pesquisa'), S.projects] : S.publications.includes(it) ? ['research.html#publications', tx('Publications', 'Publicaciones', 'Publicações'), S.publications] : ['experience.html', tx('Experience', 'Experiencia', 'Experiência'), S.experience];
 
     // small cover of scattered dots per card, seeded by the card id so each one is different but stable
     const wave = id => {
@@ -202,23 +209,23 @@
 
     const card = it => `<a class="g-card" href="detail.html#${it.id}" style="--c:var(${areaVar[it.area]})">
         ${wave(it.id)}
-        <div class="g-top"><span class="g-dot" data-area="${areaName[it.area]}" aria-label="Area: ${areaName[it.area]}"></span><span class="g-period">${todo(it.period)}</span></div>
+        <div class="g-top"><span class="g-dot" data-area="${areaName[it.area]}" aria-label="${tx('Area', 'Área', 'Área')}: ${areaName[it.area]}"></span><span class="g-period">${todo(it.period)}</span></div>
         ${it.group === 'Theses' ? `<span class="g-label">${it.kind}</span>` : ''}
         <h3>${it.cardTitle || it.title}</h3><p>${todo(it.summary)}</p>
-        <span class="g-more">Read more <i aria-hidden="true">→</i></span></a>`;
+        <span class="g-more">${tx('Read more', 'Leer más', 'Ler mais')} <i aria-hidden="true">→</i></span></a>`;
 
     document.querySelectorAll('[data-gallery]').forEach(el => {
       const key = el.dataset.gallery, group = el.dataset.group;
       let items = S[key] || [];
       if (group) items = items.filter(i => i.group === group);
-      el.innerHTML = items.length ? items.map(card).join('') : `<div class="g-empty"><span class="todo">${el.dataset.empty || '[Coming soon]'}</span></div>`;
+      el.innerHTML = items.length ? items.map(card).join('') : `<div class="g-empty"><span class="todo">${el.dataset.empty || tx('[Coming soon]', '[Próximamente]', '[Em breve]')}</span></div>`;
     });
 
     const listItem = (y, t, au, w, c) => `<article class="item" style="--c:var(${c})"><div class="when">${y}</div><h3>${t}</h3><p class="meta">${au} · ${w}</p></article>`;
     const pl = document.getElementById('poster-list');
     if (pl) pl.innerHTML = S.posters.map(([y, t, au, w]) => listItem(y, t, au, w, '--sand')).join('');
     const ll = document.getElementById('leadership-list');
-    if (ll) ll.innerHTML = S.leadership.map(l => `<article class="lead" style="--c:var(--peri)"><div class="lead-head"><div class="when">${todo(l.period)}</div><h3>${l.title}</h3><p class="meta">${l.place}</p>${l.photos ? `<div class="lead-photos">${l.photos.map(ph => `<span class="lp" tabindex="0"><img src="${ph.src}" alt="${ph.caption.replace(/"/g, '&quot;')}" loading="lazy"><figure class="big" aria-hidden="true"><img src="${ph.src}" alt="" loading="lazy"><figcaption>${ph.caption}</figcaption></figure></span>`).join('')}</div>` : ''}</div><div class="lead-body"><p class="desc">${l.text}</p><ul>${l.list.map(x => `<li>${x}</li>`).join('')}</ul>${l.link ? `<a class="lead-link" href="${l.link.href}">Read about ${l.link.label.toLowerCase()} <i aria-hidden="true">→</i></a>` : ''}</div></article>`).join('');
+    if (ll) ll.innerHTML = S.leadership.map(l => `<article class="lead" style="--c:var(--peri)"><div class="lead-head"><div class="when">${todo(l.period)}</div><h3>${l.title}</h3><p class="meta">${l.place}</p>${l.photos ? `<div class="lead-photos">${l.photos.map(ph => `<span class="lp" tabindex="0"><img src="${ph.src}" alt="${ph.caption.replace(/"/g, '&quot;')}" loading="lazy"><figure class="big" aria-hidden="true"><img src="${ph.src}" alt="" loading="lazy"><figcaption>${ph.caption}</figcaption></figure></span>`).join('')}</div>` : ''}</div><div class="lead-body"><p class="desc">${l.text}</p><ul>${l.list.map(x => `<li>${x}</li>`).join('')}</ul>${l.link ? `<a class="lead-link" href="${l.link.href}">${tx('Read about', 'Leer sobre', 'Ler sobre')} ${l.link.label.toLowerCase()} <i aria-hidden="true">→</i></a>` : ''}</div></article>`).join('');
 
     // mentoring: simple lists, same pattern as the conference papers list
     document.querySelectorAll('[data-mentees]').forEach(el => {
@@ -251,20 +258,20 @@
       const render = () => {
         const id = location.hash.slice(1);
         const it = all.find(i => i.id === id);
-        if (!it) { det.innerHTML = `<div class="wrap page-head"><h1>Not found</h1><p>This page doesn't exist. Go back to <a href="research.html">Research</a> or <a href="experience.html">Experience</a>.</p></div>`; return; }
+        if (!it) { det.innerHTML = tx(`<div class="wrap page-head"><h1>Not found</h1><p>This page doesn't exist. Go back to <a href="research.html">Research</a> or <a href="experience.html">Experience</a>.</p></div>`, `<div class="wrap page-head"><h1>Página no encontrada</h1><p>Esta página no existe. Vuelve a <a href="research.html">Investigación</a> o a <a href="experience.html">Experiencia</a>.</p></div>`, `<div class="wrap page-head"><h1>Página não encontrada</h1><p>Esta página não existe. Volte para <a href="research.html">Pesquisa</a> ou <a href="experience.html">Experiência</a>.</p></div>`); return; }
         const [backHref, backName, list] = collectionOf(it);
         const sib = it.group ? list.filter(x => x.group === it.group) : list;
         const k = sib.indexOf(it), prev = sib[k - 1], next = sib[k + 1];
         document.title = it.title.replace(/<[^>]+>/g, '') + ' · Evellyn Camelo';
-        const props = [['Period', it.period], ['Where', it.place], ['People', it.people], ['Area', areaName[it.area]]].filter(p => p[1]);
+        const props = [[tx('Period', 'Periodo', 'Período'), it.period], [tx('Where', 'Dónde', 'Onde'), it.place], [tx('People', 'Personas', 'Pessoas'), it.people], [tx('Area', 'Área', 'Área'), areaName[it.area]]].filter(p => p[1]);
         const links = (it.links || []).filter(l => l.ext).map(l => `<a class="btn" href="${l.href}" target="_blank" rel="noopener">${l.label}<span aria-hidden="true">↗</span></a>`).join('');
         const related = (it.links || []).filter(l => !l.ext).map(l => {
           const target = all.find(x => 'detail.html#' + x.id === l.href);
           return `<a class="rel" href="${l.href}"><small>${l.label}</small><span>${target ? target.title : (l.title || l.label)}</span><i aria-hidden="true">→</i></a>`;
         }).join('');
         const sec = it.sections.map(s => `<section class="d-sec${s.cls ? ' ' + s.cls : ''}"><h2>${s.h}</h2>${(s.p || []).map(p => `<p>${todo(p)}</p>`).join('')}${s.list ? `<ul>${s.list.map(l => `<li>${todo(l)}</li>`).join('')}</ul>` : ''}</section>`).join('')
-          + (it.skills ? `<section class="d-sec"><h2>Skills developed</h2><div class="skills">${it.skills.map(x => `<span>${x}</span>`).join('')}</div></section>` : '')
-          + (related ? `<section class="d-sec"><h2>Related</h2><div class="rels">${related}</div></section>` : '')
+          + (it.skills ? `<section class="d-sec"><h2>${tx('Skills developed', 'Competencias desarrolladas', 'Competências desenvolvidas')}</h2><div class="skills">${it.skills.map(x => `<span>${x}</span>`).join('')}</div></section>` : '')
+          + (related ? `<section class="d-sec"><h2>${tx('Related', 'Relacionado', 'Relacionados')}</h2><div class="rels">${related}</div></section>` : '')
           + (it.photos ? `<section class="d-sec"><div class="mosaic" data-mosaic>${it.photos.map(ph => `<figure><img src="${ph.src}" alt="${ph.caption}"><figcaption>${ph.caption}</figcaption></figure>`).join('')}</div></section>` : '');
 
         det.innerHTML = `<div class="wrap d-wrap">
@@ -274,7 +281,7 @@
             <dl class="props">${props.map(([a, b]) => `<dt>${a}</dt><dd>${todo(b)}</dd>`).join('')}</dl>
             ${links ? `<div class="btns">${links}</div>` : ''}
             ${sec}
-            <nav class="pager">${prev ? `<a href="detail.html#${prev.id}"><small>Previous</small>${prev.title}</a>` : '<span></span>'}${next ? `<a class="nx" href="detail.html#${next.id}"><small>Next</small>${next.title}</a>` : ''}</nav>
+            <nav class="pager">${prev ? `<a href="detail.html#${prev.id}"><small>${tx('Previous', 'Anterior', 'Anterior')}</small>${prev.title}</a>` : '<span></span>'}${next ? `<a class="nx" href="detail.html#${next.id}"><small>${tx('Next', 'Siguiente', 'Próximo')}</small>${next.title}</a>` : ''}</nav>
           </div>`;
         det.querySelectorAll('[data-mosaic]').forEach(mosaic);
         window.scrollTo(0, 0);
